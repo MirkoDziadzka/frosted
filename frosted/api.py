@@ -130,7 +130,11 @@ def check_path(filename, reporter=modReporter.Default, settings_path=None, **set
         msg = sys.exc_info()[1]
         reporter.unexpected_error(filename, msg.args[1])
         return 1
-    return check(codestr, filename, reporter, settings_path, **setting_overrides)
+    try:
+        return check(codestr, filename, reporter, settings_path, **setting_overrides)
+    except UnicodeError:
+        reporter.unexpected_error(filename, 'problem decoding source')
+        return 1
 
 
 def iter_source_code(paths):
